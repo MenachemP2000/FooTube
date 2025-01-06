@@ -12,6 +12,11 @@ jobs:
     environment: production
 
     steps:
+      # Step 0: Set up IP
+      - name: Get local IP
+        run: |
+          IP_ADDRESS=$(hostname -I | awk '{print $1}')
+          echo "REACT_APP_API_BASE_URL=http://$IP_ADDRESS:4000" >> $GITHUB_ENV
       # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,13 +43,13 @@ jobs:
       # Step 5: Install dependencies for the backend (server)
       - name: Install backend dependencies
         run: |
-          cd ..
           cd Server
           npm install
 
       # Step 6: Start the Node.js server
       - name: Start Node.js server
         run: |
+          cd Server
           nohup node server.js &  # Run Node.js server in the background
           echo "Node.js server started successfully"
       
