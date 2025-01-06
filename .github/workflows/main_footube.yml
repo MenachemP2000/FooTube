@@ -72,5 +72,5 @@ jobs:
         with:
           app-name: 'FooTube'
           slot-name: 'Production'
-          package: release.zip
+          package: .
           
