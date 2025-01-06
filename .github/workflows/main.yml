@@ -22,9 +22,6 @@ jobs:
         with:
           node-version: '20'  # Use the appropriate Node.js version for your project
 
-      - name: check
-        run: |
-          ls
       # Step 3: Install dependencies for the frontend
       - name: Install frontend dependencies
         run: |
@@ -41,13 +38,13 @@ jobs:
       # Step 5: Install dependencies for the backend (server)
       - name: Install backend dependencies
         run: |
+          cd ..
           cd server
           npm install
 
       # Step 6: Start the Node.js server
       - name: Start Node.js server
         run: |
-          cd server
           nohup node server.js &  # Run Node.js server in the background
           echo "Node.js server started successfully"
       
