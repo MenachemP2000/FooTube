@@ -9,7 +9,6 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const net = require('net');
 
 // Simulating in-memory data structures for watch history and related videos
 let relatedVideos = {}; // videoId -> array of related videoIds
@@ -464,7 +463,6 @@ exports.partialUpdateVideo = async (req, res) => {
               console.error("Error communicating with C++ server:", err);
               return res.status(500).send("Internal Server Error");
             }
-            console.log("C++ server response1:", response);
             relatedVideos = JSON.parse(response).recommendations;
           });
         }
@@ -505,7 +503,6 @@ exports.partialUpdateVideo = async (req, res) => {
                   console.error("Error communicating with C++ server:", err);
                   return res.status(500).send("Internal Server Error");
                 }
-                console.log("C++ server response2:", response);
                 relatedVideos = JSON.parse(response).recommendations;
               });
             }
