@@ -22,15 +22,15 @@ jobs:
         with:
           node-version: '20'  # Use the appropriate Node.js version for your project
 
+      - name: check
+        run: |
+          ls
       # Step 3: Install dependencies for the frontend
       - name: Install frontend dependencies
         run: |
           cd web-development-build
           npm install
           
-      - name: check
-        run: |
-          ls
 
       # Step 4: Build frontend for production
       - name: Build frontend
