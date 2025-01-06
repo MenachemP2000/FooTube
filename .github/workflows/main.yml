@@ -1,0 +1,58 @@
+name: Deploy FooTube Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual trigger for deployment
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Use the appropriate Node.js version for your project
+
+      # Step 3: Install dependencies for the frontend
+      - name: Install frontend dependencies
+        run: |
+          cd web-development-build
+          npm install
+
+      # Step 4: Build frontend for production
+      - name: Build frontend
+        run: |
+          cd web-development-build
+          npm run build
+
+      # Step 5: Install dependencies for the backend (server)
+      - name: Install backend dependencies
+        run: |
+          cd server
+          npm install
+
+      # Step 6: Start the Node.js server
+      - name: Start Node.js server
+        run: |
+          cd server
+          nohup node server.js &  # Run Node.js server in the background
+          echo "Node.js server started successfully"
+      
+      # Optional Step: Expose the server to a specific port if necessary
+      - name: Expose and check servers
+        run: |
+          curl --head http://localhost:4000  # Check if the server is accessible
+
+      # Step 7: Notify on success (optional)
+      - name: Notify on successful deployment
+        if: success()
+        run: echo "FooTube server deployed successfully!"
