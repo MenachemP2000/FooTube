@@ -6,35 +6,95 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 
 const express = require("express");
-const net = require("net");
-
 const app = express();
 app.use(express.json());
-const CppServerHost = "localhost"; // Host of the C++ server
-const CppServerPort = 9090; // Port of the C++ server
 
-var relatedVideos = [];
+const net = require('net');
 
+// Simulating in-memory data structures for watch history and related videos
+let relatedVideos = {}; // videoId -> array of related videoIds
+
+// Function to mimic communicate with the C++ server
+let watchHistory = {};  // userId -> list of videoIds
 function communicateWithCppServer(message, callback) {
-  const client = new net.Socket();
-  let responseData = "";
+  // Simulate the behavior of the C++ server
 
-  client.connect(CppServerPort, CppServerHost, () => {
-    client.write(message);
-  });
+  const request = message.trim();  // Remove any leading or trailing spaces/newlines
+  
+  if (request.startsWith("WATCH")) {
+    const parts = request.split(" ");
+    const userId = parts[1];
+    const videoId = parts[2];
 
-  client.on("data", (data) => {
-    responseData += data.toString();
-  });
+    // Update watch history
+    if (!watchHistory[userId]) {
+      watchHistory[userId] = [];
+    }
+    if (!watchHistory[userId].includes(videoId)) {
+      watchHistory[userId].push(videoId);
+    }
 
-  client.on("end", () => {
-    callback(null, responseData);
-  });
+    // Initialize related videos for this videoId if not already present
+    if (!relatedVideos[videoId]) {
+      relatedVideos[videoId] = [];
+    }
 
-  client.on("error", (err) => {
-    callback(err, null);
-  });
+    // Simulate updating the related videos based on the watch history
+    // Add the watched video to related videos of other videos
+    for (const watchedVideo of watchHistory[userId]) {
+      if (watchedVideo !== videoId) {
+        // Update related videos for both the current video and the watched video
+        if (!relatedVideos[videoId].includes(watchedVideo)) {
+          relatedVideos[videoId].push(watchedVideo);
+        }
+        if (!relatedVideos[watchedVideo]) {
+          relatedVideos[watchedVideo] = [];
+        }
+        if (!relatedVideos[watchedVideo].includes(videoId)) {
+          relatedVideos[watchedVideo].push(videoId);
+        }
+      }
+    }
+
+    // Generate recommendations based on related videos for the current video
+    const recommendations = relatedVideos[videoId];  // Get related videos for the current video
+
+    // Format response as JSON
+    const response = JSON.stringify({ recommendations: recommendations });
+
+    // Simulate delay like the C++ server does
+    setTimeout(() => {
+      callback(null, response);
+    }, 500);  // Simulate server delay
+  } else {
+    callback("Invalid message format", null);  // Handle invalid message
+  }
 }
+
+
+
+// const CppServerHost = "localhost"; // Host of the C++ server
+// const CppServerPort = 9090; // Port of the C++ server
+// function communicateWithCppServer(message, callback) {
+//   const client = new net.Socket();
+//   let responseData = "";
+
+//   client.connect(CppServerPort, CppServerHost, () => {
+//     client.write(message);
+//   });
+
+//   client.on("data", (data) => {
+//     responseData += data.toString();
+//   });
+
+//   client.on("end", () => {
+//     callback(null, responseData);
+//   });
+
+//   client.on("error", (err) => {
+//     callback(err, null);
+//   });
+// }
 
 // Create a new video
 exports.createVideo = async (req, res) => {
