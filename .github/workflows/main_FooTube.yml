@@ -1,1 +1,80 @@
+name: Deploy FooTube Server
 
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual trigger for deployment
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      # Step 0: Set up IP
+      - name: Get local IP
+        run: |
+          IP_ADDRESS=$(hostname -I | awk '{print $1}')
+          echo "REACT_APP_API_BASE_URL=http://$IP_ADDRESS:4000" >> $GITHUB_ENV
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Use the appropriate Node.js version for your project
+
+      # Step 3: Install dependencies for the frontend
+      - name: Install frontend dependencies
+        run: |
+          cd web-devlopment-build
+          npm install
+          
+
+      # Step 4: Build frontend for production
+      - name: Build frontend
+        run: |
+          cd web-devlopment-build
+          npm run build
+
+      # Step 5: Install dependencies for the backend (server)
+      - name: Install backend dependencies
+        run: |
+          cd Server
+          npm install
+
+      # Step 6: Start the Node.js server
+      - name: Start Node.js server
+        run: |
+          cd Server
+          nohup node server.js &  # Run Node.js server in the background
+          echo "Node.js server started successfully"
+      
+      # Optional Step: Expose the server to a specific port if necessary
+      - name: Expose and check servers
+        run: |
+          curl --head http://localhost:4000  # Check if the server is accessible
+
+       # Step 7: Log in to Azure
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        
+      # Step 8: Deploy to Azure Web App
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'FooTube'  # Replace with your Azure Web App name
+          slot-name: 'production'  # Optional: If you're using deployment slots
+          package: ./Server  # Path to your server directory or the packaged app
+
+      # Step 9: Notify on successful deployment
+      - name: Notify on successful deployment
+        if: success()
+        run: echo "FooTube server deployed successfully!"
