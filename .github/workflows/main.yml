@@ -39,7 +39,7 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd ..
-          cd server
+          cd Server
           npm install
 
       # Step 6: Start the Node.js server
