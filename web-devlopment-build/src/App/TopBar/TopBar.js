@@ -42,9 +42,12 @@ const TopBar = ({ toggleMenu, toggleDropDown ,isSignedIn, theme,bigProfilePicRef
     setSearchOpen(false);
   };
 
+  /*
   const handleDropDown = () => {
     toggleDropDown();
   };
+  */
+  
 
   const handleAddVideoClick = () => {
     navigate('/AddVideo');
