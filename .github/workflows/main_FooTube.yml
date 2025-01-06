@@ -59,20 +59,21 @@ jobs:
           curl --head http://localhost:4000  # Check if the server is accessible
 
        # Step 7: Log in to Azure
-      - name: Log in to Azure
+      - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.__clientidsecretname__ }}
+          tenant-id: ${{ secrets.__tenantidsecretname__ }}
+          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
         
       # Step 8: Deploy to Azure Web App
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'FooTube'  # Replace with your Azure Web App name
-          slot-name: 'production'  # Optional: If you're using deployment slots
-          package: ./Server  # Path to your server directory or the packaged app
+          app-name: 'FooTube'
+          slot-name: 'Production'
+          package: .Server
 
       # Step 9: Notify on successful deployment
       - name: Notify on successful deployment
