@@ -98,8 +98,10 @@ const TopBar = ({ toggleMenu, toggleDropDown ,isSignedIn, theme,bigProfilePicRef
                 </div>
                 <div className="drop-down">
                   <button className="btn addVideoBtn" onClick={handleAddVideoClick}>
-                    <i className="bi bi-plus"></i>
+                    <i className="bi bi-camera-video"></i>
                   </button>
+                </div>
+                <div className="drop-down">
                   <img className="clickable profilePic" src={isSignedIn.image} onClick={toggleDropDown} height="40px" width="40px" alt="Profile"></img>
                 </div>
               </div>
