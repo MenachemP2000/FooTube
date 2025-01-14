@@ -1,4 +1,4 @@
-# Foo Tube: a youtube mockup
+# Foo Tube: video sharing and streaming website
 
 
 instructions for using the code:
