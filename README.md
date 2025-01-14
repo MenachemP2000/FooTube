@@ -1,5 +1,7 @@
-# Advanced Web Development Project part 4
+# Foo Tube: a youtube mockup
 
+
+instructions for using the code:
 # Running the Server
 
 To run the server, follow these steps:
