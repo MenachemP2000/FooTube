@@ -27,7 +27,7 @@ jobs:
           cd ~/FooTube  # Navigate to your repository on the server
           git pull origin main  # Pull the latest changes
           sudo systemctl stop my-node-app.service  # Stop the service
-          cd /web-devlopment-build
+          cd web-devlopment-build
           npm install  # Ensure dependencies are up to date
           npm run build  # Build the app
           sudo systemctl start my-node-app.service  # Restart the service
