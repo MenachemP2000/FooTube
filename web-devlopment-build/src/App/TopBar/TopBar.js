@@ -134,7 +134,7 @@ const TopBar = ({ toggleMenu, toggleDropDown ,isSignedIn, theme,bigProfilePicRef
             </div>
             <h1 className="app-title clickable" onClick={handleClick}>
               <img className='icon' src="/favicon.ico" width="30px" height="30px" alt="Icon"></img>
-              FooTube&trade;
+              Foo-Tube&trade;
             </h1>
           </div>
           <div className="search">
