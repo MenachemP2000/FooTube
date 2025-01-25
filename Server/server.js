@@ -16,8 +16,8 @@ if (!mongodbUri) {
   console.error('MONGODB_URI is not defined');
   process.exit(1);
 }
-
 // Middleware
+
 app.use(express.json());
 
 // Allow all origins in CORS
@@ -43,6 +43,10 @@ const tokenRoutes = require('./routes/tokenRoutes');
 app.use('/api/users', userRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/tokens', tokenRoutes);
+app.use('/your-react-route', (req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'none'; script-src 'self' 'blob:';");
+  next();
+});
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../web-devlopment-build/build')));
